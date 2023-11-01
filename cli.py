@@ -1,19 +1,64 @@
-# This file contains the Command Line Interface (CLI) for
-# the Tic-Tac-Toe game. This is where input and output happens.
-# For core game logic, see logic.py.
+def make_empty_board():
+    return [
+        [None, None, None],
+        [None, None, None],
+        [None, None, None],
+    ]
 
-from logic import make_empty_board
+def print_board(board):
+    for row in board:
+        print(" | ".join(str(cell) if cell is not None else " " for cell in row))
+        print("-" * 9)
 
+def get_winner(board):
+    """Determines the winner of the given board.
+    Returns 'X', 'O', or None."""
+    for i in range(3):
+        # Check horizontal wins
+        if board[i][0] == board[i][1] == board[i][2]:
+            return board[i][0]
 
-# Reminder to check all the tests
+        # Check vertical wins
+        if board[0][i] == board[1][i] == board[2][i]:
+            return board[0][i]
+
+    # Check diagonal wins
+    if board[0][0] == board[1][1] == board[2][2]:
+        return board[0][0]
+    if board[0][2] == board[1][1] == board[2][0]:
+        return board[0][2]
+
+    return None
+
+def other_player(player):
+    """Given the character for a player, returns the other player."""
+    return 'X' if player == 'O' else 'O'
 
 if __name__ == '__main__':
     board = make_empty_board()
     winner = None
-    while winner == None:
-        print("TODO: take a turn!")
-        # TODO: Show the board to the user.
-        # TODO: Input a move from the player.
-        # TODO: Update the board.
-        # TODO: Update who's turn it is.
-        winner = 'X'  # FIXME
+    current_player = 'X'
+
+    while winner is None:
+        print_board(board)
+        print(f"Player {current_player}'s turn")
+        row = int(input("Enter row (0, 1, or 2): "))
+        col = int(input("Enter column (0, 1, or 2): "))
+
+        if board[row][col] is None:
+            board[row][col] = current_player
+            winner = get_winner(board)
+
+            if winner:
+                print_board(board)
+                print(f"Player {winner} wins!")
+                break
+
+            if all(cell is not None for row in board for cell in row):
+                print_board(board)
+                print("Success!")
+                break
+
+            current_player = other_player(current_player)
+        else:
+            print("Position is taken, you should try it again.")
