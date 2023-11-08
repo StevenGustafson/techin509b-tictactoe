@@ -66,5 +66,5 @@ def is_board_full(board):
     for row in board:
         for cell in row:
             if cell == ' ':
-                return False  # 如果有一个空格，游戏板未满
-    return True  # 游戏板已满
+                return False  
+    return True 
