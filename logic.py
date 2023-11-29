@@ -6,8 +6,11 @@ class TicTacToe:
     def record_winner(self, winner):
         with open('logs/winners_log.csv', mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([winner.number, winner.piece, winner.__class__.__name__])
-    
+            if winner is None:
+                writer.writerow(["Draw", "Draw", "Draw"])
+            else:
+                writer.writerow([winner.number, winner.piece, winner.__class__.__name__])
+                
     def undo_move(self, move):
         row, col = move
         self.board[row][col] = " "
@@ -102,60 +105,63 @@ class HumanPlayer(Player):
 # logic.py
 
 class BotPlayer(Player):
-    # def make_move(self, game):
-    #     _, move = self.minimax(game, self, game.get_opponent(self), float('-inf'), float('inf'))
-    #     move_result = game.make_move(move)
-    #     return move_result
-
-    # def minimax(self, game, maximizing_player, minimizing_player, alpha, beta):
-    #     if game.is_game_over():
-    #         return self.evaluate(game), None
-
-    #     available_moves = [(row, col) for row in range(3) for col in range(3) if game.is_valid_move(row, col)]
-
-    #     if maximizing_player == self:
-    #         best_score = float('-inf')
-    #         best_move = None
-    #         for move in available_moves:
-    #             game.make_move(move)
-    #             score, _ = self.minimax(game, game.get_opponent(self), self, alpha, beta)
-    #             game.undo_move(move)
-
-    #             if score > best_score:
-    #                 best_score = score
-    #                 best_move = move
-
-    #             alpha = max(alpha, best_score)
-    #             if alpha >= beta:
-    #                 break  # Beta cut-off
-
-    #         return best_score, best_move
-
-    #     else:
-    #         best_score = float('inf')
-    #         best_move = None
-    #         for move in available_moves:
-    #             game.make_move(move)
-    #             score, _ = self.minimax(game, self, game.get_opponent(self), alpha, beta)
-    #             game.undo_move(move)
-
-    #             if score < best_score:
-    #                 best_score = score
-    #                 best_move = move
-
-    #             beta = min(beta, best_score)
-    #             if alpha >= beta:
-    #                 break  # Alpha cut-off
-
-    #         return best_score, best_move
-
-    # def evaluate(self, game):
-    #     if game.is_winner(self):
-    #         return 1
-    #     elif game.is_winner(game.get_opponent(self)):
-    #         return -1
-    #     else:
-    #         return 0
+    #with algorithm
     def make_move(self, game):
-        row, col = game.get_random_valid_move()
-        return game.make_move((row, col))
+        _, move = self.minimax(game, self, game.get_opponent(self), float('-inf'), float('inf'))
+        move_result = game.make_move(move)
+        return move_result
+
+    def minimax(self, game, maximizing_player, minimizing_player, alpha, beta):
+        if game.is_game_over():
+            return self.evaluate(game), None
+
+        available_moves = [(row, col) for row in range(3) for col in range(3) if game.is_valid_move(row, col)]
+
+        if maximizing_player == self:
+            best_score = float('-inf')
+            best_move = None
+            for move in available_moves:
+                game.make_move(move)
+                score, _ = self.minimax(game, game.get_opponent(self), self, alpha, beta)
+                game.undo_move(move)
+
+                if score > best_score:
+                    best_score = score
+                    best_move = move
+
+                alpha = max(alpha, best_score)
+                if alpha >= beta:
+                    break  # Beta cut-off
+
+            return best_score, best_move
+
+        else:
+            best_score = float('inf')
+            best_move = None
+            for move in available_moves:
+                game.make_move(move)
+                score, _ = self.minimax(game, self, game.get_opponent(self), alpha, beta)
+                game.undo_move(move)
+
+                if score < best_score:
+                    best_score = score
+                    best_move = move
+
+                beta = min(beta, best_score)
+                if alpha >= beta:
+                    break  # Alpha cut-off
+
+            return best_score, best_move
+
+    def evaluate(self, game):
+        if game.is_winner(self):
+            return 1
+        elif game.is_winner(game.get_opponent(self)):
+            return -1
+        else:
+            return 0
+
+    # #random
+    # def make_move(self, game):
+    #     row, col = game.get_random_valid_move()
+    #     return game.make_move((row, col))

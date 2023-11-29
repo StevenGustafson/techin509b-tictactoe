@@ -46,6 +46,8 @@ def play_game():
             game.record_winner(game.player1)
         elif game.is_winner(game.player2):
             game.record_winner(game.player2)
+        else:
+            game.record_winner(None)  # Log draw
 
         games_played += 1
         print(f"\nGame {games_played} completed out of {total_games}.\n")
