@@ -1,47 +1,49 @@
 # cli.py
 
-from logic import TicTacToeGame
+from logic import TicTacToe, HumanPlayer, BotPlayer
 
-class TicTacToeCLI:
-    def __init__(self, game):
-        self.game = game
+def play_game():
+    player_count = int(input("Enter the number of players (1 or 2): "))
+    if player_count == 1:
+        player1 = HumanPlayer("X",  1)  # Provide a value for the 'number' parameter
+        player2 = BotPlayer("O",  2)    # Provide a value for the 'number' parameter
+    elif player_count == 2:
+        player1 = HumanPlayer("X", 1)  # Provide a value for the 'number' parameter
+        player2 = HumanPlayer("O",  2)  # Provide a value for the 'number' parameter
+    else:
+        print("Invalid number of players. Exiting.")
+        return
 
-    def play(self):
-        while not self.game.is_game_over():
-            self.game.print_board()
-            print(f"It's {self.game.get_current_player()}'s turn.")
+    game = TicTacToe(player1, player2)
 
-            if self.game.is_single_player() and self.game.get_current_player() == self.game.get_bot_player():
-                # If single player, let the bot make a move
-                self.game.make_bot_move()
-            else:
-                # Input a move from the player
-                try:
-                    row = int(input("Enter the row (1, 2, or 3): ")) - 1  # Adjust to 0-based index
-                    col = int(input("Enter the column (1, 2, or 3): ")) - 1  # Adjust to 0-based index
-                except ValueError:
-                    print("Invalid input. Please enter a number.")
-                    continue
+    while True:
+        print("\nNew Game:")
+        while not game.is_game_over():
+            print_board(game.board)
+            move_result = game.current_player.make_move(game)
+            if move_result:
+                print(move_result)
 
-                # Make a move
-                if not self.game.make_move(row, col):
-                    print("Invalid move. Try again.")
-                    continue
+        print_board(game.board)
+        print(game.get_game_result())
+        if not play_again():
+            break
+        else:
+            game.reset_game()
 
-            # Check if someone has won
-            if self.game.get_winner():
-                self.game.print_board()
-                if self.game.get_winner() == "Tie":
-                    print("It's a tie! The game is a draw.")
-                else:
-                    print(f"Player {self.game.get_winner()} wins!")
+def print_board(board):
+    for i in range(3):
+        for j in range(3):
+            print(f" {board[i][j]} ", end="")
+            if j < 2:
+                print("|", end="")
+        print("\n", end="")
+        if i < 2:
+            print("-----------")
+    print("\n")
 
-            # Switch to the other player's turn
-            self.game.switch_player()
+def play_again():
+    return input("Do you want to play again? (yes/no): ").lower().startswith('y')
 
-
-if __name__ == '__main__':
-    # Initialize the game with the CLI
-    game = TicTacToeGame()
-    cli = TicTacToeCLI(game)
-    cli.play()
+if __name__ == "__main__":
+    play_game()
