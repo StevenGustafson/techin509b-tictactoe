@@ -1,6 +1,21 @@
 # logic.py
 
+import csv
+
 class TicTacToe:
+    def record_winner(self, winner):
+        with open('logs/winners_log.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([winner.number, winner.piece, winner.__class__.__name__])
+    
+    def undo_move(self, move):
+        row, col = move
+        self.board[row][col] = " "
+        self.switch_player()
+
+    def get_opponent(self, player):
+        return self.player2 if player == self.player1 else self.player1
+   
     def __init__(self, player1, player2):
         self.board = [[" "]*3 for _ in range(3)]
         self.player1 = player1
@@ -19,8 +34,7 @@ class TicTacToe:
             return True
         else:
             print("Invalid move. Try again.")
-            return False  # Return False instead of raising an exception
-
+            return False
 
     def is_valid_move(self, row, col):
         return 0 <= row < 3 and 0 <= col < 3 and self.board[row][col] == " " 
@@ -34,7 +48,6 @@ class TicTacToe:
             return True
 
         return False
-
 
     def is_draw(self):
         return all(cell != " " for row in self.board for cell in row)
@@ -71,15 +84,78 @@ class Player:
 
 
 class HumanPlayer(Player):
+    # def make_move(self, game):
+    #     row = int(input(f"Player {self.number}, enter the row (0, 1, or 2): "))
+    #     col = int(input(f"Player {self.number}, enter the column (0, 1, or 2): "))
+    #     move_result = game.make_move((row, col))
+        
+    #     if game.is_winner(self):
+    #         game.record_winner(self)
+            
+    #     return move_result
     def make_move(self, game):
-        row = int(input(f"Player {self.number}, enter the row (0, 1, or 2): "))
-        col = int(input(f"Player {self.number}, enter the column (0, 1, or 2): "))
+        row, col = game.get_random_valid_move()
         return game.make_move((row, col))
 
 
-class BotPlayer(Player):
-    def make_move(self, game):
-        # Implement bot logic (for simplicity, we use random moves here)
-        row, col = game.get_random_valid_move()
-        return game.make_move((row, col))  # Fix: Pass a tuple to make_move
 
+# logic.py
+
+class BotPlayer(Player):
+    # def make_move(self, game):
+    #     _, move = self.minimax(game, self, game.get_opponent(self), float('-inf'), float('inf'))
+    #     move_result = game.make_move(move)
+    #     return move_result
+
+    # def minimax(self, game, maximizing_player, minimizing_player, alpha, beta):
+    #     if game.is_game_over():
+    #         return self.evaluate(game), None
+
+    #     available_moves = [(row, col) for row in range(3) for col in range(3) if game.is_valid_move(row, col)]
+
+    #     if maximizing_player == self:
+    #         best_score = float('-inf')
+    #         best_move = None
+    #         for move in available_moves:
+    #             game.make_move(move)
+    #             score, _ = self.minimax(game, game.get_opponent(self), self, alpha, beta)
+    #             game.undo_move(move)
+
+    #             if score > best_score:
+    #                 best_score = score
+    #                 best_move = move
+
+    #             alpha = max(alpha, best_score)
+    #             if alpha >= beta:
+    #                 break  # Beta cut-off
+
+    #         return best_score, best_move
+
+    #     else:
+    #         best_score = float('inf')
+    #         best_move = None
+    #         for move in available_moves:
+    #             game.make_move(move)
+    #             score, _ = self.minimax(game, self, game.get_opponent(self), alpha, beta)
+    #             game.undo_move(move)
+
+    #             if score < best_score:
+    #                 best_score = score
+    #                 best_move = move
+
+    #             beta = min(beta, best_score)
+    #             if alpha >= beta:
+    #                 break  # Alpha cut-off
+
+    #         return best_score, best_move
+
+    # def evaluate(self, game):
+    #     if game.is_winner(self):
+    #         return 1
+    #     elif game.is_winner(game.get_opponent(self)):
+    #         return -1
+    #     else:
+    #         return 0
+    def make_move(self, game):
+        row, col = game.get_random_valid_move()
+        return game.make_move((row, col))
