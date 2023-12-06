@@ -4,7 +4,7 @@ from logic import TicTacToe, HumanPlayer, BotPlayer
 
 def play_game():
     global games_played
-    total_games = 100
+    total_games = 1000
     games_played = 0
 
     player_count = int(input("Enter the number of players (1 or 2): "))
