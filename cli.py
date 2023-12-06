@@ -3,16 +3,9 @@
 from logic import TicTacToe, HumanPlayer, BotPlayer
 
 def play_game():
-    def print_board(board):
-        for i in range(3):
-            for j in range(3):
-                print(f" {board[i][j]} ", end="")
-                if j < 2:
-                    print("|", end="")
-            print("\n", end="")
-            if i < 2:
-                print("-----------")
-        print("\n")
+    global games_played
+    total_games = 100
+    games_played = 0
 
     player_count = int(input("Enter the number of players (1 or 2): "))
     if player_count == 1:
@@ -27,32 +20,31 @@ def play_game():
 
     game = TicTacToe(player1, player2)
 
-    total_games = 1000
-    games_played = 0
-
     while games_played < total_games:
         print("\nNew Game:")
-        while not game.is_game_over():
-            # print_board(game.board)
-            move_result = game.current_player.make_move(game)
-            # if move_result:
-                # print(move_result)
+        
+        # Record the first move of player1 at the beginning of each game
+        # game.record_first_move_per_game()
 
-        # print_board(game.board)
+        while not game.is_game_over():
+            if game.current_player == player1:
+                move_result = game.current_player.make_move(game)
+            else:
+                move_result = game.current_player.make_move(game)
+
         print(game.get_game_result())
 
-        # Log winner data
-        if game.is_winner(game.player1):
-            game.record_winner(game.player1)
-        elif game.is_winner(game.player2):
-            game.record_winner(game.player2)
+        # Check if move_result is a tuple before recording winner
+        if game.is_winner(player1):
+            game.record_winner(player1)
+        elif game.is_winner(player2):
+            game.record_winner(player2)
         else:
-            game.record_winner(None)  # Log draw
+            game.record_winner(None)
 
         games_played += 1
         print(f"\nGame {games_played} completed out of {total_games}.\n")
 
-        # Reset the game for the next iteration
         game.reset_game()
 
     print("\nAll games completed.")

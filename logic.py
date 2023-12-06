@@ -2,16 +2,19 @@
 
 import csv
 
+import csv
+
 class TicTacToe:
     def record_winner(self, winner):
-        with open('logs/w10-pruningat1_log.csv', mode='a', newline='') as file:
+        move = self.get_random_valid_move()
+        with open('logs/w10.csv', mode='a', newline='') as file:
             writer = csv.writer(file)
             if winner is None:
-                writer.writerow(["Draw"])
+                writer.writerow(["Draw",(move[0], move[1])])
             else:
-                outcome = "win" if winner == self.player2 else "lose"
-                writer.writerow([outcome])
-                
+                outcome = "win" if winner == self.player1 else "lose"
+                writer.writerow([outcome, (move[0], move[1])])
+
     def undo_move(self, move):
         row, col = move
         self.board[row][col] = " "
