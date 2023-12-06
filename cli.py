@@ -27,7 +27,7 @@ def play_game():
 
     game = TicTacToe(player1, player2)
 
-    total_games = 100
+    total_games = 1000
     games_played = 0
 
     while games_played < total_games:
@@ -35,10 +35,10 @@ def play_game():
         while not game.is_game_over():
             # print_board(game.board)
             move_result = game.current_player.make_move(game)
-            if move_result:
-                print(move_result)
+            # if move_result:
+                # print(move_result)
 
-        print_board(game.board)
+        # print_board(game.board)
         print(game.get_game_result())
 
         # Log winner data

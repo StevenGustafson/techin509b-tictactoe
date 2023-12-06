@@ -4,12 +4,13 @@ import csv
 
 class TicTacToe:
     def record_winner(self, winner):
-        with open('logs/winners_log.csv', mode='a', newline='') as file:
+        with open('logs/w10-pruningat1_log.csv', mode='a', newline='') as file:
             writer = csv.writer(file)
             if winner is None:
-                writer.writerow(["Draw", "Draw", "Draw"])
+                writer.writerow(["Draw"])
             else:
-                writer.writerow([winner.number, winner.piece, winner.__class__.__name__])
+                outcome = "win" if winner == self.player2 else "lose"
+                writer.writerow([outcome])
                 
     def undo_move(self, move):
         row, col = move
